@@ -85,11 +85,6 @@ code { font-family: var(--font-mono); font-size: .92em; }
 .privacy::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: var(--ok); flex: none; }
 
 /* Panely */
-.grid2 { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
-.results { display: grid; grid-template-columns: minmax(0, 1.55fr) minmax(0, 1fr); gap: 16px; align-items: start; }
-@media (max-width: 880px) {
-  .grid2, .results { grid-template-columns: minmax(0, 1fr); }
-}
 .panel {
   background: var(--surface);
   border: 1px solid var(--line);
@@ -107,6 +102,11 @@ code { font-family: var(--font-mono); font-size: .92em; }
   margin: 0; font-size: 12px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--muted);
   display: flex; align-items: center; gap: 8px;
 }
+.step {
+  display: inline-grid; place-items: center; width: 20px; height: 20px; border-radius: 50%;
+  background: var(--ink); color: var(--surface); font: 600 11px/1 var(--font-mono); letter-spacing: 0;
+}
+.count { font: 500 13px var(--font-mono); color: var(--muted); font-variant-numeric: tabular-nums; }
 .tag {
   font-size: 11px; letter-spacing: .04em; text-transform: none; font-weight: 500;
   color: var(--warn); background: var(--warn-soft); border-radius: 4px; padding: 1px 6px;
@@ -134,7 +134,7 @@ button[disabled] { opacity: .5; cursor: default; }
   font: 14px/1.7 var(--font-mono);
   padding: 14px;
 }
-#input { min-height: 240px; flex: 1; }
+#input { min-height: 170px; }
 .panel.input:focus-within { border-color: var(--accent); }
 #output { min-height: 150px; background: var(--sunken); border-block: 1px solid var(--line); }
 
@@ -142,8 +142,7 @@ button[disabled] { opacity: .5; cursor: default; }
   font: 14px/1.9 var(--font-mono);
   white-space: pre-wrap; word-break: break-all;
   padding: 14px;
-  min-height: 240px; max-height: 380px; overflow: auto;
-  flex: 1;
+  min-height: 90px; max-height: 320px; overflow: auto;
 }
 .xray .empty { color: var(--muted); font-family: var(--font-sans); }
 .xray .sep { color: var(--muted); }
@@ -181,7 +180,7 @@ button[disabled] { opacity: .5; cursor: default; }
 /* Verdikt */
 .verdict {
   display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 14px 28px;
-  background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius);
+  border-bottom: 1px solid var(--line);
   padding: 16px 18px;
 }
 .verdict-text { display: flex; gap: 12px; align-items: flex-start; min-width: 0; flex: 1 1 320px; }
@@ -202,14 +201,12 @@ button[disabled] { opacity: .5; cursor: default; }
 .stats .s-ok dd { color: var(--ok); }
 
 /* Nálezy */
-.seg { display: inline-flex; border: 1px solid var(--line); border-radius: 7px; overflow: hidden; }
-.seg button { border: 0; border-radius: 0; background: transparent; padding: 6px 10px; }
-.seg button + button { border-left: 1px solid var(--line); }
-.seg button[aria-pressed="true"] { background: var(--ink); color: var(--surface); }
 .list { display: grid; }
 .list .none { padding: 28px 16px; text-align: center; color: var(--muted); }
 .item { padding: 14px; display: grid; gap: 8px; border-top: 1px solid var(--line); min-width: 0; }
 .item:first-child { border-top: 0; }
+.item.st-bad { background: var(--bad-soft); }
+.item.st-bad .after code { background: var(--surface); }
 .item-head { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 10px; font-size: 13px; }
 .item-head .num { font-family: var(--font-mono); color: var(--muted); font-variant-numeric: tabular-nums; }
 .item-head .where { color: var(--muted); margin-left: auto; font-size: 12px; }
@@ -236,16 +233,31 @@ button[disabled] { opacity: .5; cursor: default; }
 .after code { color: var(--ink); background: var(--sunken); border: 1px solid var(--line); border-radius: 4px; padding: 1px 5px; word-break: break-all; }
 
 /* Opravený seznam */
-.out { position: sticky; top: calc(env(safe-area-inset-top, 0px) + 12px); }
-.out .count { font: 500 13px var(--font-mono); color: var(--muted); font-variant-numeric: tabular-nums; }
 .opts { display: grid; gap: 6px; padding: 12px 14px; font-size: 14px; }
 .opts label { display: flex; gap: 8px; align-items: flex-start; cursor: pointer; }
 .opts input { margin-top: 4px; accent-color: var(--accent); }
 .out-actions { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; padding: 12px 14px; }
 .out-actions .status { font-size: 13px; color: var(--ok); }
-.rejected { border-top: 1px solid var(--line); padding: 12px 14px; display: grid; gap: 8px; font-size: 14px; }
-.rejected h3 { margin: 0; font-size: 12px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--bad); }
-.rejected ul { margin: 0; padding: 0; list-style: none; display: grid; gap: 2px; font: 13px/1.6 var(--font-mono); word-break: break-all; }
+.changes { border-top: 1px solid var(--line); padding: 14px; display: grid; gap: 4px; }
+.changes h3 { margin: 0 0 6px; font-size: 12px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+.chg-head, .chg-row { display: grid; grid-template-columns: 2.6em minmax(0, 1fr) 1.4em minmax(0, 1fr); gap: 4px 12px; align-items: baseline; }
+.chg-head span { font-size: 11px; letter-spacing: .07em; text-transform: uppercase; color: var(--muted); }
+.chg-row { padding: 9px 0; border-top: 1px solid var(--line); }
+.chg-row .num { font: 13px var(--font-mono); color: var(--muted); font-variant-numeric: tabular-nums; }
+.chg-row .from, .chg-row .to { font: 14px/1.8 var(--font-mono); word-break: break-all; min-width: 0; }
+.chg-row .arrow { color: var(--muted); text-align: center; }
+.chg-row .to.t-fix { color: var(--ok); }
+.chg-row .to.t-drop { color: var(--bad); font-family: var(--font-sans); }
+.chg-row .to.t-warn { color: var(--warn); }
+.chg-row .what { grid-column: 2 / -1; display: flex; flex-wrap: wrap; gap: 4px 6px; font-size: 13px; color: var(--muted); }
+.chg-row .fx { font: 12px/1.6 var(--font-mono); background: var(--sunken); border: 1px solid var(--line); border-radius: 4px; padding: 0 6px; color: var(--ink); }
+@media (max-width: 640px) {
+  .chg-head { display: none; }
+  .chg-head, .chg-row { grid-template-columns: 2.2em minmax(0, 1fr); }
+  .chg-row .arrow { display: none; }
+  .chg-row .to { grid-column: 2; }
+  .chg-row .to::before { content: "→ "; color: var(--muted); }
+}
 
 /* Co se kontroluje */
 .about { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 250px), 1fr)); gap: 12px 28px; padding: 8px 2px 0; color: var(--muted); font-size: 14px; }
@@ -265,77 +277,71 @@ button[disabled] { opacity: .5; cursor: default; }
     <span class="privacy">Text se nikam neodesílá, kontrola běží jen ve vašem prohlížeči</span>
   </header>
 
-  <section class="grid2">
-    <div class="panel input">
-      <div class="panel-head">
-        <h2><label for="input">Vložený text</label> <span class="tag" id="sampleTag">ukázková data</span></h2>
-        <div class="btns">
-          <button type="button" id="btnSample">Ukázka</button>
-          <button type="button" id="btnClear">Vymazat</button>
-        </div>
+  <section class="panel input" aria-labelledby="lblInput">
+    <div class="panel-head">
+      <h2><span class="step">1</span><label for="input" id="lblInput">Vložený text</label> <span class="tag" id="sampleTag">ukázková data</span></h2>
+      <div class="btns">
+        <button type="button" id="btnSample">Ukázka</button>
+        <button type="button" id="btnClear">Vymazat</button>
       </div>
-      <textarea id="input" spellcheck="false" autocomplete="off" placeholder="jan.novak@firma.cz; eva.mala@seznam.cz; …"></textarea>
     </div>
-    <div class="panel">
-      <div class="panel-head">
-        <h2>Rentgen textu</h2>
-        <div class="legend" aria-hidden="true">
-          <span><i class="l-bad"></i>blokuje</span>
-          <span><i class="l-fix"></i>opraví se</span>
-          <span><i class="l-warn"></i>zkontrolovat</span>
-        </div>
-      </div>
-      <div class="xray" id="xray" aria-live="off"></div>
-    </div>
+    <textarea id="input" spellcheck="false" autocomplete="off" placeholder="jan.novak@firma.cz; eva.mala@seznam.cz; …"></textarea>
   </section>
 
-  <section class="verdict" id="verdict" data-state="empty" aria-live="polite">
-    <div class="verdict-text">
-      <span class="dot"></span>
-      <div><strong id="verdictTitle">Vložte adresy oddělené středníkem.</strong><span class="sub" id="verdictSub"></span></div>
+  <section class="panel problems" aria-labelledby="lblProblems">
+    <div class="verdict" id="verdict" data-state="empty" aria-live="polite">
+      <div class="verdict-text">
+        <span class="dot"></span>
+        <div><strong id="verdictTitle">Vložte adresy oddělené středníkem.</strong><span class="sub" id="verdictSub"></span></div>
+      </div>
+      <dl class="stats">
+        <div><dt>Adres</dt><dd id="cTotal">0</dd></div>
+        <div class="s-bad"><dt>Blokuje</dt><dd id="cBad">0</dd></div>
+        <div class="s-fix"><dt>Opraveno</dt><dd id="cFixed">0</dd></div>
+        <div class="s-warn"><dt>Zkontrolovat</dt><dd id="cWarn">0</dd></div>
+        <div class="s-ok"><dt>V pořádku</dt><dd id="cOk">0</dd></div>
+      </dl>
     </div>
-    <dl class="stats">
-      <div><dt>Adres</dt><dd id="cTotal">0</dd></div>
-      <div class="s-bad"><dt>Blokuje</dt><dd id="cBad">0</dd></div>
-      <div class="s-fix"><dt>Opraveno</dt><dd id="cFixed">0</dd></div>
-      <div class="s-warn"><dt>Zkontrolovat</dt><dd id="cWarn">0</dd></div>
-      <div class="s-ok"><dt>V pořádku</dt><dd id="cOk">0</dd></div>
-    </dl>
+    <div class="panel-head">
+      <h2 id="lblProblems"><span class="step">2</span>Chybné adresy</h2>
+      <span class="count" id="probCount"></span>
+    </div>
+    <div class="list" id="list"></div>
   </section>
 
-  <section class="results">
-    <div class="panel">
-      <div class="panel-head">
-        <h2>Nálezy</h2>
-        <div class="seg" role="group" aria-label="Filtr">
-          <button type="button" id="fProblems" aria-pressed="true">Jen problémy</button>
-          <button type="button" id="fAll" aria-pressed="false">Všechny adresy</button>
-        </div>
+  <section class="panel" aria-labelledby="lblXray">
+    <div class="panel-head">
+      <h2 id="lblXray"><span class="step">3</span>Rentgen textu</h2>
+      <div class="legend" aria-hidden="true">
+        <span><i class="l-bad"></i>blokuje</span>
+        <span><i class="l-fix"></i>opraví se</span>
+        <span><i class="l-warn"></i>zkontrolovat</span>
       </div>
-      <div class="list" id="list"></div>
     </div>
+    <div class="xray" id="xray" aria-live="off"></div>
+  </section>
 
-    <aside class="panel out">
-      <div class="panel-head">
-        <h2><label for="output">Opravený seznam</label></h2>
-        <span class="count" id="outCount">0 adres</span>
-      </div>
-      <div class="opts">
-        <label><input type="checkbox" id="optTranslit" checked> <span>Převést diakritiku na ASCII (á → a, č → c)</span></label>
-        <label><input type="checkbox" id="optDedupe" checked> <span>Vynechat duplicitní adresy</span></label>
-      </div>
-      <textarea id="output" readonly spellcheck="false" placeholder="Tady se objeví adresy připravené k odeslání."></textarea>
-      <div class="out-actions">
-        <button type="button" class="primary" id="btnCopy">Kopírovat seznam</button>
-        <button type="button" id="btnUse">Zkontrolovat znovu</button>
-        <span class="status" id="copyStatus" role="status"></span>
-      </div>
-      <div class="rejected" id="rejected" hidden>
-        <h3 id="rejectedTitle">Vyřazeno</h3>
-        <ul id="rejectedList"></ul>
-        <div><button type="button" id="btnCopyRejected">Kopírovat vyřazené</button></div>
-      </div>
-    </aside>
+  <section class="panel out" aria-labelledby="lblOutput">
+    <div class="panel-head">
+      <h2><span class="step">4</span><label for="output" id="lblOutput">Opravený výstup</label></h2>
+      <span class="count" id="outCount">0 adres</span>
+    </div>
+    <div class="opts">
+      <label><input type="checkbox" id="optTranslit" checked> <span>Převést diakritiku na ASCII (á → a, č → c)</span></label>
+      <label><input type="checkbox" id="optDedupe" checked> <span>Vynechat duplicitní adresy</span></label>
+    </div>
+    <textarea id="output" readonly spellcheck="false" placeholder="Tady se objeví adresy připravené k odeslání."></textarea>
+    <div class="out-actions">
+      <button type="button" class="primary" id="btnCopy">Kopírovat opravený seznam</button>
+      <button type="button" id="btnUse">Zkontrolovat znovu</button>
+      <button type="button" id="btnCopyRejected" hidden>Kopírovat vyřazené</button>
+      <span class="status" id="copyStatus" role="status"></span>
+    </div>
+    <div class="changes" id="changes" hidden>
+      <h3>Nález → oprava</h3>
+      <div class="chg-head" aria-hidden="true"><span>#</span><span>Nález (původně)</span><span></span><span>Oprava (ve výstupu)</span></div>
+      <div id="chgList"></div>
+    </div>
   </section>
 
   <section class="about">
@@ -695,7 +701,7 @@ const input = $('#input');
 const xray = $('#xray');
 const list = $('#list');
 const output = $('#output');
-const state = { filter: 'problems', result: null, text: '', sample: false };
+const state = { result: null, text: '', sample: false };
 
 function el(tag, cls, text) {
   const n = document.createElement(tag);
@@ -790,16 +796,18 @@ const STATUS_LABEL = { bad: 'Blokuje odeslání', fixed: 'Opraveno automaticky',
 function renderList(items, map) {
   list.textContent = '';
   const real = items.filter((it) => !it.empty);
-  const shown = state.filter === 'all' ? real : real.filter((it) => it.status !== 'ok');
+  const rank = { bad: 0, warn: 1, fixed: 2, ok: 3 };
+  const shown = real.filter((it) => it.status !== 'ok').sort((a, b) => rank[a.status] - rank[b.status] || a.start - b.start);
   const emptyJunk = items.filter((it) => it.empty);
-  if (!real.length && !emptyJunk.length) { list.appendChild(el('div', 'none', 'Zatím tu nic není. Vložte text vlevo nahoře.')); return; }
+  $('#probCount').textContent = real.length ? `${shown.length} z ${real.length}` : '';
+  if (!real.length && !emptyJunk.length) { list.appendChild(el('div', 'none', 'Zatím tu nic není. Vložte text do pole nahoře.')); return; }
   if (!shown.length && !emptyJunk.length) {
     list.appendChild(el('div', 'none', `Žádné problémy. ${real.length === 1 ? 'Adresa je' : 'Všech ' + real.length + ' adres je'} v pořádku.`));
     return;
   }
   const frag = document.createDocumentFragment();
   for (const it of shown) {
-    const art = el('article', 'item');
+    const art = el('article', 'item st-' + it.status);
     art.id = 'item-' + it.num;
     const head = el('div', 'item-head');
     head.append(el('span', 'num', '#' + it.num), el('span', 'pill ' + it.status, STATUS_LABEL[it.status]), el('span', 'where', posLabel(it.start)));
@@ -814,7 +822,7 @@ function renderList(items, map) {
       renderRange(raw, state.text, it.start, it.end, map, false);
       raw.appendChild(document.createTextNode('>'));
     } else {
-      renderRange(raw, state.text, it.start, it.end, map, false);
+      renderRange(raw, state.text, ...spanOf(it), map, false);
     }
     art.appendChild(raw);
 
@@ -841,6 +849,8 @@ function renderList(items, map) {
       const p = el('div', 'after', 'Po opravě: ');
       p.appendChild(el('code', null, it.fixed));
       art.appendChild(p);
+    } else if (it.status === 'bad') {
+      art.appendChild(el('div', 'after', 'Tuto adresu nejde opravit automaticky. Ve výstupu chybí, opravte ji ručně.'));
     }
     frag.appendChild(art);
   }
@@ -880,11 +890,11 @@ function renderSummary(items, sepCount) {
   else if (c.bad) {
     st = 'bad';
     title = `${c.bad} ${plural(c.bad, 'adresa zablokuje', 'adresy zablokují', 'adres zablokuje')} odeslání.`;
-    sub = 'Opravte je ručně podle nálezů. Ostatní adresy jsou v opraveném seznamu vpravo.';
+    sub = 'Opravte je ručně podle nálezů níže. Ostatní adresy jsou v opraveném výstupu dole.';
   } else if (c.fixed || items.some((it) => it.empty)) {
     st = 'fixed';
     title = 'Problémové znaky jdou odstranit automaticky.';
-    sub = 'Zkopírujte opravený seznam vpravo a vložte ho do e-mailu místo původního.';
+    sub = 'Zkopírujte opravený výstup dole a vložte ho do e-mailu místo původního.';
   } else if (c.warn) {
     st = 'warn';
     title = 'Seznam lze odeslat, ale zkontrolujte upozornění.';
@@ -899,19 +909,95 @@ function renderSummary(items, sepCount) {
   $('#verdictSub').textContent = sub;
 }
 
-function renderOutput(items) {
+// Rozsah pro zobrazení adresy včetně neviditelných znaků na okrajích a podobného oddělovače před ní.
+function spanOf(it) {
+  let a = it.start, b = it.end;
+  for (const x of it.issues) {
+    if (x.idx == null || x.where === 've jménu příjemce') continue;
+    a = Math.min(a, x.idx);
+    b = Math.max(b, x.idx + x.len);
+  }
+  return [a, b];
+}
+
+function cleanName(it) {
+  if (it.nameStart == null || it.nameEnd <= it.nameStart) return '';
+  let out = '';
+  for (let i = it.nameStart; i < it.nameEnd;) {
+    const [cp, len] = cpAt(state.text, i);
+    if (cp === 0x20 || !invisibleInfo(cp)) out += String.fromCodePoint(cp);
+    i += len;
+  }
+  return out.trim();
+}
+function outFor(it) {
+  const name = cleanName(it);
+  return name ? `${name} <${it.fixed}>` : it.fixed;
+}
+
+function fixChip(x) {
+  if (x.kind === 'split') return ['doplněn středník', x.name];
+  if (x.kind === 'sep') return [`„${x.ch}“ → „;“ · ${x.name.replace(/ \(.*\)/, '').toLowerCase()}`, `${hex(x.cp)} · ${x.name}`];
+  if (x.kind === 'inv') return [`${x.short} odstraněno${x.where === 've jménu příjemce' ? ' ze jména' : ''}`, `${hex(x.cp)} · ${x.name}`];
+  const label = x.kind === 'dia' ? 'diakritika' : x.kind === 'homo' ? x.name.toLowerCase() : x.name.toLowerCase();
+  return [`„${x.ch}“ → „${x.fix}“ · ${label}`, `${hex(x.cp)} · ${x.name}`];
+}
+
+function renderOutput(items, map) {
   const opts = readOpts();
   const good = items.filter((it) => !it.empty && it.status !== 'bad' && !(opts.dedupe && it.dup));
-  output.value = good.map((it) => it.fixed).join('; ');
+  output.value = good.map(outFor).join('; ');
   $('#outCount').textContent = `${good.length} ${plural(good.length, 'adresa', 'adresy', 'adres')}`;
   $('#btnCopy').disabled = !good.length;
   $('#btnUse').disabled = !good.length;
   const bad = items.filter((it) => !it.empty && it.status === 'bad');
-  $('#rejected').hidden = !bad.length;
-  $('#rejectedTitle').textContent = `Vyřazeno (${bad.length}), opravte ručně`;
-  const ul = $('#rejectedList');
-  ul.textContent = '';
-  bad.forEach((it) => ul.appendChild(el('li', null, `#${it.num}  ${state.text.slice(it.start, it.end)}`)));
+  $('#btnCopyRejected').hidden = !bad.length;
+  $('#btnCopyRejected').textContent = `Kopírovat vyřazené (${bad.length})`;
+
+  const box = $('#chgList');
+  box.textContent = '';
+  let rows = 0;
+  for (const it of items) {
+    const changed = it.issues.some((x) => x.fix != null) || it.status !== 'ok' || it.dup;
+    if (!changed) continue;
+    const row = el('div', 'chg-row');
+    row.appendChild(el('span', 'num', it.empty ? '–' : '#' + it.num));
+    const from = el('span', 'from');
+    if (it.nameStart != null && it.nameEnd > it.nameStart) {
+      renderRange(from, state.text, it.nameStart, it.nameEnd, map, false);
+      from.appendChild(document.createTextNode('<'));
+      renderRange(from, state.text, it.start, it.end, map, false);
+      from.appendChild(document.createTextNode('>'));
+    } else if (it.empty) {
+      for (const x of it.issues) from.appendChild(glyph(x));
+    } else renderRange(from, state.text, ...spanOf(it), map, false);
+    row.append(from, el('span', 'arrow', '→'));
+
+    const what = el('div', 'what');
+    const chip = (t, title) => { const c = el('span', 'fx', t); if (title) c.title = title; what.appendChild(c); };
+    let to;
+    if (it.empty) {
+      to = el('span', 'to t-drop', 'prázdná položka, vynechána');
+      it.issues.forEach((x) => chip(...fixChip(x)));
+    } else if (it.status === 'bad') {
+      to = el('span', 'to t-drop', 'nelze opravit automaticky, vyřazeno');
+      it.issues.filter((x) => x.fix == null).forEach((x) => what.appendChild(el('span', null, issueText(x))));
+      it.structural.filter((x) => x.sev === 'error').forEach((x) => what.appendChild(el('span', null, x.msg)));
+    } else if (it.dup && opts.dedupe) {
+      to = el('span', 'to t-warn', 'duplicita, vynecháno');
+      it.issues.filter((x) => x.fix != null).forEach((x) => chip(...fixChip(x)));
+    } else {
+      const fixes = it.issues.filter((x) => x.fix != null);
+      to = el('span', 'to ' + (fixes.length ? 't-fix' : 't-warn'), outFor(it));
+      fixes.forEach((x) => chip(...fixChip(x)));
+      it.structural.filter((x) => x.sev === 'warn').forEach((x) => what.appendChild(el('span', null, 'Ponecháno, ' + x.msg.charAt(0).toLowerCase() + x.msg.slice(1))));
+    }
+    row.appendChild(to);
+    if (what.childNodes.length) row.appendChild(what);
+    box.appendChild(row);
+    rows++;
+  }
+  $('#changes').hidden = !rows;
 }
 
 function readOpts() { return { translit: $('#optTranslit').checked, dedupe: $('#optDedupe').checked }; }
@@ -927,7 +1013,7 @@ function run() {
   renderXray(text, res.items, map);
   renderSummary(res.items, res.sepCount);
   renderList(res.items, map);
-  renderOutput(res.items);
+  renderOutput(res.items, map);
 }
 
 /* ---------- Interakce ---------- */
@@ -964,21 +1050,12 @@ function findIssue(idx) {
   return null;
 }
 function goToItem(num) {
-  let card = document.getElementById('item-' + num);
-  if (!card && state.filter !== 'all') { setFilter('all'); card = document.getElementById('item-' + num); }
+  const card = document.getElementById('item-' + num);
   if (!card) return;
   card.scrollIntoView({ block: 'center', behavior: 'smooth' });
   card.classList.remove('flash'); void card.offsetWidth; card.classList.add('flash');
 }
 
-function setFilter(f) {
-  state.filter = f;
-  $('#fProblems').setAttribute('aria-pressed', f === 'problems');
-  $('#fAll').setAttribute('aria-pressed', f === 'all');
-  run();
-}
-$('#fProblems').addEventListener('click', () => setFilter('problems'));
-$('#fAll').addEventListener('click', () => setFilter('all'));
 
 let timer;
 input.addEventListener('input', () => {
