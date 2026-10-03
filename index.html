@@ -59,7 +59,6 @@ h1 { margin: 0; font-size: 26px; line-height: 1.15; font-weight: 700; letter-spa
 }
 .box-head h2 { margin: 0; font-size: 16px; font-weight: 600; display: flex; align-items: center; gap: 10px; }
 .box-head .note { font-size: 13px; color: var(--muted); }
-.tag { font-size: 12px; font-weight: 500; color: var(--warn); background: var(--warn-soft); border-radius: 4px; padding: 1px 7px; }
 .badge { font: 600 13px/1 var(--font-mono); border-radius: 999px; padding: 4px 9px; font-variant-numeric: tabular-nums; }
 .badge.b-bad { color: var(--bad); background: var(--bad-soft); }
 .badge.b-warn { color: var(--warn); background: var(--warn-soft); }
@@ -120,13 +119,12 @@ button:focus-visible, textarea:focus-visible { outline: 2px solid var(--accent);
 
   <section class="box input">
     <div class="box-head">
-      <h2><label for="input">Vložte adresy</label> <span class="tag" id="sampleTag">ukázka</span></h2>
+      <h2><label for="input">Vložte adresy</label></h2>
       <div class="btns">
-        <button type="button" id="btnSample">Ukázka</button>
         <button type="button" id="btnClear">Vymazat</button>
       </div>
     </div>
-    <textarea id="input" spellcheck="false" autocomplete="off" placeholder="jan.novak@firma.cz; eva.mala@seznam.cz; …"></textarea>
+    <textarea id="input" spellcheck="false" autocomplete="off" placeholder="Sem vložte e-mailové adresy oddělené středníkem"></textarea>
   </section>
 
   <section class="box sec-bad" aria-labelledby="hBad">
@@ -537,7 +535,7 @@ function addSegment(text, s, e, items) {
 /* ---------- Vykreslení ---------- */
 
 const input = $('#input');
-const state = { text: '', lines: [0], sample: false };
+const state = { text: '', lines: [0] };
 
 function el(tag, cls, text) {
   const n = document.createElement(tag);
@@ -674,25 +672,12 @@ function run() {
 
 let timer;
 input.addEventListener('input', () => {
-  if (state.sample) setSample(false);
   clearTimeout(timer);
   timer = setTimeout(run, input.value.length > 20000 ? 250 : 60);
 });
-// Když je v poli ukázka, první vložení ji nahradí.
-input.addEventListener('focus', () => { if (state.sample) input.select(); });
 
-const SAMPLE =
-  'jan.novak@firma.cz; petra.svobodova@seznam.cz;​ tomas.dvorak@gmail.com; ' +
-  'lucie.černá@firma.cz; martin.kral@firma,cz; martin.novakova@firma.cz; ' +
-  'ondrej.benes@firma.cz ; pavel.horak@gmail.co; jana.vesela@sezman.cz; ' +
-  'k.marek@firmа.cz; jana.dvorak@firma.cz; obchod＠firma.cz; petra.svobodova@seznam.cz';
+$('#btnClear').addEventListener('click', () => { input.value = ''; run(); input.focus(); });
 
-function setSample(on) { state.sample = on; $('#sampleTag').hidden = !on; }
-$('#btnSample').addEventListener('click', () => { input.value = SAMPLE; setSample(true); run(); });
-$('#btnClear').addEventListener('click', () => { input.value = ''; setSample(false); run(); input.focus(); });
-
-input.value = SAMPLE;
-setSample(true);
 run();
 })();
 </script>
