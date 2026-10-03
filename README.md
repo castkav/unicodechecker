@@ -2,14 +2,23 @@
 
 Online kontrola seznamu e-mailových adres oddělených středníkem. Po vložení textu aplikace hned ukáže znaky, kvůli kterým by e-mail neodešel, a nabídne opravený seznam ke zkopírování.
 
-## Co kontroluje
+## Co ukazuje
 
-- **Neviditelné znaky:** mezera nulové šířky (ZWSP), nezlomitelná mezera (NBSP), BOM, měkký spojovník, řídicí znaky směru textu, řídicí znaky ASCII.
-- **Znaky, které jen vypadají stejně:** písmena z cyrilice a řečtiny, zavináč a tečka plné šířky, typografické pomlčky a apostrofy, řecký otazník nebo jiný „středník“ jako oddělovač.
-- **Diakritika a znaky mimo ASCII:** volitelně převede á → a, č → c apod.
-- **Formát adresy:** chybějící nebo zdvojený zavináč, tečky na okraji, čárka v doméně, chybějící koncovka, délkové limity (RFC 5321), více adres bez středníku, překlepy typu `gmial.com`, duplicity.
+Hned pod polem pro vložení jsou dvě sekce. Nic se automaticky neopravuje, aplikace jen ukazuje, kde je problém.
 
-Každý nález má pozici v textu a tlačítko **Najít**, které znak označí ve vstupním poli. Panel **Rentgen textu** zobrazí celý vložený text i s neviditelnými znaky.
+**Co brání odeslání**
+- neviditelné znaky: mezera nulové šířky (ZWSP), nezlomitelná mezera (NBSP), BOM, měkký spojovník, řídicí znaky,
+- diakritika a další znaky mimo ASCII (á, ž, ř…),
+- písmena z cyrilice a řečtiny, znaky plné šířky, typografické pomlčky,
+- řecký otazník nebo jiný „středník“ jako oddělovač,
+- chyby formátu: chybějící nebo zdvojený zavináč, čárka v doméně, tečky na okraji, chybějící koncovka, více adres bez středníku.
+
+U každého znaku je kód (např. `U+200B`), pozice v textu a tlačítko **Najít**, které znak označí ve vstupním poli.
+
+**Možná špatně**
+- překlepy v doménách českých i zahraničních schránek (`sezman.cz`, `gmail.co`, `seznam.com`…),
+- jméno nesedí k příjmení: `martin.novakova` → nemá být `martina.novakova`?, `jana.dvorak` → nemá být `jana.dvorakova`?,
+- duplicitní adresy.
 
 ## Soukromí
 
